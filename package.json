@@ -110,7 +110,23 @@
   },
   "babel": {
     "presets": [
-        "react-app"
+      "react-app"
+    ],
+    "plugins": [
+      [
+        "import",
+        {
+          "libraryName": "antd",
+          "libraryDirectory": "lib",
+          "style": "css"
+        },
+        "ant"
+      ]
     ]
+  },
+  "devDependencies": {
+    "antd": "^3.11.1",
+    "babel-plugin-import": "^1.11.0",
+    "node-sass": "^4.11.0"
   }
 }
