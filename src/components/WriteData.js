@@ -63,7 +63,21 @@ class WriteData extends React.Component {
     makeChart(){
         let { inComeData } = this.state;
         let monthsData = inComeData[0].monthsData;
-        console.log(inComeData,picOptions())
+        let months = monthsData.reduce((t,e,i)=>{
+            t.push(e.months)
+            return t
+        },[])
+        let monthData = monthsData.reduce((t,e,i)=>{
+            t.push({
+                name:e.months,
+                value:e.monthMoney
+            })
+            return t
+        },[])
+        let myChart = echarts.init(document.getElementById('lineChart'))
+        myChart.setOption(picOptions(months,monthData))
+
+        console.log(inComeData,)
     }
     render() {
         return (<div>
@@ -93,6 +107,8 @@ class WriteData extends React.Component {
                     </div>
                 )
             })}
+            <div id="lineChart" className="line-chart item-chart"></div>
+
             <div>
                 <Button onClick={this.makeChart.bind(this)}>画图</Button>
             </div>
