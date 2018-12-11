@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { Button } from 'antd';
-
+import echarts from 'echarts'
+import {picOptions} from './../tools/utils'
 
 class WriteData extends React.Component {
     constructor(props) {
@@ -41,7 +42,7 @@ class WriteData extends React.Component {
             inComeData
         })
     }
-    changeMoths(i,j, e) {
+    changeMoths(i,j,e) {
         let { inComeData } = this.state;
         inComeData = JSON.parse(JSON.stringify(inComeData));
         inComeData[i].monthsData[j].months = e.target.value;
@@ -58,6 +59,11 @@ class WriteData extends React.Component {
             ...this.state,
             inComeData
         })
+    }
+    makeChart(){
+        let { inComeData } = this.state;
+        let monthsData = inComeData[0].monthsData;
+        console.log(inComeData,picOptions())
     }
     render() {
         return (<div>
@@ -87,6 +93,9 @@ class WriteData extends React.Component {
                     </div>
                 )
             })}
+            <div>
+                <Button onClick={this.makeChart.bind(this)}>画图</Button>
+            </div>
         </div>)
     }
 }
