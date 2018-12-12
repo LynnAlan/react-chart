@@ -1,0 +1,24 @@
+.wirte-data{
+    .detail-data{
+        width: 800px;
+        margin: 0 auto;
+        .item-filed{
+            margin: 20px;
+            label{
+                margin: 0 10px;
+            }   
+                  
+        }
+        .del-filed{
+            margin: 10px;
+            label{
+                margin: 0 10px 0 0;
+            } 
+        }  
+        .item-year{
+            margin: 10px;
+            border: 1px solid #cecece;
+            border-radius: 6px;
+        }
+    }
+}

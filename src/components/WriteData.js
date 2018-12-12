@@ -2,66 +2,106 @@
 import React from 'react';
 import { Button } from 'antd';
 import echarts from 'echarts'
-import {picOptions} from './../tools/utils'
-
+import {yearIncomeOptions,deepCopy} from './../tools/utils'
+import { InputNumber } from 'antd';
+import './style.scss'
 class WriteData extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             inComeData: [
                 {
-                    year: '2018',
+                    year: 2018,
                     monthsData: [
                         {
-                            monthMoney: '14000',
-                            months: 12
+                            monthMoney: 0,
+                            months: 1
                         }
                     ]
                 }
             ]
         }
     }
-    addYearsEvents(j) {
+    getStateIncomeData(){
         let { inComeData } = this.state;
-        inComeData = JSON.parse(JSON.stringify(inComeData))
+        inComeData = deepCopy(inComeData)
+        return inComeData;
+    }
+    addMonthsEvents(j) {
+        let inComeData = this.getStateIncomeData();
         inComeData[j].monthsData.push({
-            monthMoney: '18000',
-            months: 12
+            monthMoney: 0,
+            months: 1
         })
         this.setState({
             ...this.state,
             inComeData
         })
     }
-    changeYear(i,e) {
-        let { inComeData } = this.state;
-        inComeData = JSON.parse(JSON.stringify(inComeData));
-        inComeData[i].year = e.target.value;
+    delMonth(i,j){
+        let inComeData = this.getStateIncomeData();
+        inComeData[i].monthsData = inComeData[i].monthsData.filter((e,jj)=>{
+            return j !== jj
+        })
         this.setState({
             ...this.state,
             inComeData
         })
     }
-    changeMoths(i,j,e) {
-        let { inComeData } = this.state;
-        inComeData = JSON.parse(JSON.stringify(inComeData));
-        inComeData[i].monthsData[j].months = e.target.value;
+    addYearsEvents() {
+        let inComeData = this.getStateIncomeData();
+        inComeData.push({
+            year: 2018,
+            monthsData: [
+                {
+                    monthMoney: 0,
+                    months: 1
+                }
+            ]
+        })
         this.setState({
             ...this.state,
             inComeData
         })
     }
-    changeMonthMoney(i,j,e) {
-        let { inComeData } = this.state;
-        inComeData = JSON.parse(JSON.stringify(inComeData));
-        inComeData[i].monthsData[j].monthMoney = e.target.value;
+    delYear(i){
+        let inComeData = this.getStateIncomeData();
+        inComeData = inComeData.filter((e,j)=>{
+            return j !== i
+        })
+        this.setState({
+            ...this.state,
+            inComeData
+        })
+    }
+    changeYear(i,val) {
+        let inComeData = this.getStateIncomeData();
+        inComeData[i].year = val;
+        this.setState({
+            ...this.state,
+            inComeData
+        })
+    }
+    changeMoths(i,j,val) {
+        let inComeData = this.getStateIncomeData();
+
+        inComeData[i].monthsData[j].months = val;
+        this.setState({
+            ...this.state,
+            inComeData
+        })
+    }
+    changeMonthMoney(i,j,val) {
+        let inComeData = this.getStateIncomeData();
+        inComeData[i].monthsData[j].monthMoney = val;
         this.setState({
             ...this.state,
             inComeData
         })
     }
     makeChart(){
-        let { inComeData } = this.state;
+        let inComeData = this.getStateIncomeData();
+        console.log(inComeData)
         let monthsData = inComeData[0].monthsData;
         let months = monthsData.reduce((t,e,i)=>{
             t.push(e.months)
@@ -75,42 +115,57 @@ class WriteData extends React.Component {
             return t
         },[])
         let myChart = echarts.init(document.getElementById('lineChart'))
-        myChart.setOption(picOptions(months,monthData))
-
-        console.log(inComeData,)
+        myChart.setOption(yearIncomeOptions(months,monthData))
     }
     render() {
-        return (<div>
-            {this.state.inComeData.map((e, i) => {
-                return (
-                    <div key={i}>
-                        <div >
-                            年份：<input type="text" value={e.year} onChange={this.changeYear.bind(this, i)} />
+        return (<div className="wirte-data">
+            <div className="detail-data">
+                {this.state.inComeData.map((e,i) => {
+                    return (
+                        <div key={i} className="item-year">
+                            <div className="item-filed">
+                                年份：
+                                <label>
+                                 <InputNumber value={e.year} onChange={this.changeYear.bind(this,i)}/>
+                                </label>
+                            </div>
+                            {
+                                e.monthsData.map((env,j) => {
+                                    return (
+                                        <div key={j} className="item-filed">
+                                            月薪：
+                                            <label>
+                                                <InputNumber  value={env.monthMoney}  onChange={this.changeMonthMoney.bind(this,i,j)} />
+                                            </label>
+                                            <label > X </label>
+                                            <label>
+                                                <InputNumber value={env.months} onChange={this.changeMoths.bind(this,i,j)}/>
+                                            </label>
+                                           
+                                            <label>
+                                                <Button type="danger" onClick={this.delMonth.bind(this,i,j)}>Delete Month</Button>
+                                            </label>
+                                        </div>
+                                    )
+                                })
+                            }
+                            <div className="del-filed">
+                                <label>
+                                    { <Button type="primary" onClick={this.addMonthsEvents.bind(this,i)}>Add Month</Button>}
+                                </label>
+                                <label>
+                                    {<Button type="danger" onClick={this.delYear.bind(this,i)}>Delete Year</Button>}
+                                </label>
+                            </div>
                         </div>
-                        {
-                            e.monthsData.map((env, j) => {
-                                return (
-                                    <div key={j}>
-                                        月薪
-                                        <label>
-                                            <input type="text" placeholder="请输入月薪" value={env.monthMoney} onChange={this.changeMonthMoney.bind(this, i,j)} />
-                                        </label>
-                                        <span > X </span>
-                                        <label>
-                                            <input type="text" placeholder='请输入月薪的月数' value={env.months} onChange={this.changeMoths.bind(this, i,j)} />
-                                        </label>
-                                        {e.monthsData.length == j + 1 ? <Button type="primary" onClick={this.addYearsEvents.bind(this,i)}>Add</Button>:null}
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-                )
-            })}
-            <div id="lineChart" className="line-chart item-chart"></div>
-
-            <div>
-                <Button onClick={this.makeChart.bind(this)}>画图</Button>
+                    )
+                })}
+                <Button type="primary" onClick={this.addYearsEvents.bind(this)}>Add Year</Button>
+                <div>
+                    <Button onClick={this.makeChart.bind(this)}>画图</Button>
+                </div>
+                <div id="lineChart" className="line-chart item-chart"></div>
+                
             </div>
         </div>)
     }
