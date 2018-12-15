@@ -118,7 +118,6 @@ class WriteData extends React.Component {
     }
     changeMoths(i,j,val) {
         let inComeData = this.getStateIncomeData();
-
         inComeData[i].monthsData[j].months = val;
         this.setState({
             ...this.state,
@@ -145,7 +144,6 @@ class WriteData extends React.Component {
                 name:e.year,
                 value:t
             })
-           // console.log(t)
         })
         let myChart = echarts.init(document.getElementById('picChart'))
         myChart.setOption(yearIncomeOptions(years,yearsIncome))
