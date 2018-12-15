@@ -1,7 +1,7 @@
 export const yearIncomeOptions = (legendData, seriesData) => {
     let option = {
         title:{
-            text:"年收入占比图（税前）",
+            text:"年收入占比图",
             x:'center'
 
         },
