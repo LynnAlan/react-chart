@@ -7,5 +7,8 @@ class HelloReact extends React.Component {
             test
         </div> )
     }
+
+
+    
 }
 export default HelloReact;
