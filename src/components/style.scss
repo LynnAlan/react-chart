@@ -1,7 +1,13 @@
+
+.App{
+    width: 1300px;
+    margin: 20px auto;
+}
 .wirte-data{
+    display: flex;
+    flex-direction:row;
     .detail-data{
-        width: 800px;
-        margin: 0 auto;
+        width: 600px;
         .item-filed{
             margin: 20px;
             label{
@@ -20,5 +26,8 @@
             border: 1px solid #cecece;
             border-radius: 6px;
         }
+    }
+    .all-charts{
+        width: 700px;
     }
 }

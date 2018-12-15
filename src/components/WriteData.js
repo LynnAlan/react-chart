@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import echarts from 'echarts'
-import {yearIncomeOptions,deepCopy} from './../tools/utils'
+import {yearIncomeOptions,deepCopy,lineOpts} from './../tools/utils'
 import { InputNumber } from 'antd';
 import './style.scss'
 class WriteData extends React.Component {
@@ -14,8 +14,42 @@ class WriteData extends React.Component {
                     year: 2018,
                     monthsData: [
                         {
-                            monthMoney: 0,
-                            months: 1
+                            monthMoney: 10000,
+                            months: 6
+                        },
+                        {
+                            monthMoney:12100,
+                            months:6
+                        }
+                    ]
+                },
+                {
+                    year: 2017,
+                    monthsData: [
+                        {
+                            monthMoney: 2100,
+                            months: 6
+                        },
+                        {
+                            monthMoney: 14000,
+                            months: 6
+                        }
+                    ]
+                },
+                {
+                    year: 2016,
+                    monthsData: [
+                        {
+                            monthMoney: 8001,
+                            months: 4
+                        },
+                        {
+                            monthMoney: 2300,
+                            months: 4
+                        },
+                        {
+                            monthMoney:5600,
+                            months:4
                         }
                     ]
                 }
@@ -101,25 +135,52 @@ class WriteData extends React.Component {
     }
     makeChart(){
         let inComeData = this.getStateIncomeData();
-        console.log(inComeData)
-        let monthsData = inComeData[0].monthsData;
-        let months = monthsData.reduce((t,e,i)=>{
-            t.push(e.months)
-            return t
-        },[])
-        let monthData = monthsData.reduce((t,e,i)=>{
-            t.push({
-                name:e.months,
-                value:e.monthMoney
+        let years = [],yearsIncome = [];
+        inComeData.forEach(e=>{
+            years.push(e.year);
+            let t = e.monthsData.reduce((t,ele) =>{
+                return t += ele.months * ele.monthMoney
+            },0)
+            yearsIncome.push({
+                name:e.year,
+                value:t
             })
-            return t
-        },[])
+           // console.log(t)
+        })
+        let myChart = echarts.init(document.getElementById('picChart'))
+        myChart.setOption(yearIncomeOptions(years,yearsIncome))
+        this.makeLineData();
+    }
+    makeLineData(){
+        let inComeData = this.getStateIncomeData();
+        //1、年份排序
+        inComeData.sort((a,b) => {
+            return a.year - b.year
+        })
+        //2、生成时间线
+        let times = [];
+        let moneys = [];
+        inComeData.forEach(e=>{
+            let m = 1 ;
+            e.monthsData.forEach(ele=>{
+                let i = m;
+                m += ele.months;
+                for(; i < m; i++){
+                    moneys.push(ele.monthMoney)
+                    times.push(`${e.year}-${i}`)
+                }
+            })
+        })
         let myChart = echarts.init(document.getElementById('lineChart'))
-        myChart.setOption(yearIncomeOptions(months,monthData))
+        myChart.setOption(lineOpts(times,moneys))
     }
     render() {
         return (<div className="wirte-data">
+           
             <div className="detail-data">
+                <div>
+                    <Button onClick={this.makeChart.bind(this)}>画图</Button>
+                </div>
                 {this.state.inComeData.map((e,i) => {
                     return (
                         <div key={i} className="item-year">
@@ -138,6 +199,7 @@ class WriteData extends React.Component {
                                                 <InputNumber  value={env.monthMoney}  onChange={this.changeMonthMoney.bind(this,i,j)} />
                                             </label>
                                             <label > X </label>
+                                            月数：
                                             <label>
                                                 <InputNumber value={env.months} onChange={this.changeMoths.bind(this,i,j)}/>
                                             </label>
@@ -161,12 +223,12 @@ class WriteData extends React.Component {
                     )
                 })}
                 <Button type="primary" onClick={this.addYearsEvents.bind(this)}>Add Year</Button>
-                <div>
-                    <Button onClick={this.makeChart.bind(this)}>画图</Button>
-                </div>
-                <div id="lineChart" className="line-chart item-chart"></div>
-                
             </div>
+            <div className="all-charts">
+                <div id="picChart" className="pic-chart " ></div>
+                <div id="lineChart" className="line-chart item-chart"></div>
+            </div>
+         
         </div>)
     }
 }
