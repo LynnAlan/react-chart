@@ -176,7 +176,6 @@ class WriteData extends React.Component {
     }
     render() {
         return (<div className="wirte-data">
-           
             <div className="detail-data">
                 <div>
                     <Button onClick={this.makeChart.bind(this)}>画图</Button>
@@ -213,10 +212,10 @@ class WriteData extends React.Component {
                             }
                             <div className="del-filed">
                                 <label>
-                                    { <Button type="primary" onClick={this.addMonthsEvents.bind(this,i)}>Add Month</Button>}
+                                    <Button type="primary" onClick={this.addMonthsEvents.bind(this,i)}>Add Month</Button>
                                 </label>
                                 <label>
-                                    {<Button type="danger" onClick={this.delYear.bind(this,i)}>Delete Year</Button>}
+                                    <Button type="danger" onClick={this.delYear.bind(this,i)}>Delete Year</Button>
                                 </label>
                             </div>
                         </div>
